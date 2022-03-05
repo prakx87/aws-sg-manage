@@ -1,0 +1,70 @@
+<!-- sgman/templates/sgman/sg_list.html -->
+
+{% extends 'sgman/base.html' %}
+
+{% block content %}
+<head>
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Solid border */
+hr.solid {
+  border-top: 3px solid #bbb;
+}
+
+table, td, th {
+  border: 1px solid #DDD;
+  text-align:center;
+  width:14.2%;
+  padding:5px;
+}
+
+table {
+  width: 700px;
+  border-collapse: collapse;
+}
+
+</style>
+</head>
+
+{% if user.is_authenticated and perms.sgman.change_sgaccess %}
+<div class="container">
+    <form method="POST">
+      <fieldset>
+        <strong><legend>Enter Employee IP To Allow Access</legend></strong>
+        {{ sg_access_form }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </fieldset>
+    </form>
+</div>
+
+<hr class="solid">
+
+<table class="table is-bordered">
+  <table class="table">
+   <thead>
+    <tr>
+      <th>Security Group Rule ID</th>
+        <th>Allowed IP</th>
+        <th>Added At</th>
+        <th>Added By</th>
+    </tr>
+  </thead>
+    <tr>
+        {% for sg in allowed_sg_list %}
+        <tr>
+        <td>{{ sg.sg_rule_id }}</td>
+        <td>{{ sg.allow_ip }}</td>
+        <td>{{ sg.datetime_added }}</td>
+        <td>{{ sg.added_by }}</td>
+         </tr>
+        {% endfor %}
+    </tr>
+  </table>
+</div>
+
+{% endif %}
+
+{% endblock content %}
