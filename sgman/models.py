@@ -24,7 +24,7 @@ class VpnSgId(models.Model):
 
 class SgAccess(models.Model):
     sg_rule_id = models.CharField(max_length=50, null=True)
-    allow_ip = models.GenericIPAddressField(unique=True,)
+    allow_ip = models.GenericIPAddressField()
     datetime_added = models.DateTimeField(default=timezone.now)
     added_by = models.CharField(max_length=50)
     enabled = models.BooleanField(default=False)
@@ -37,41 +37,34 @@ class SgAccess(models.Model):
 def pre_save_sgaccess(sender, instance: SgAccess, **kwargs):
     # Check if Security Group is added by checking Model entry count
     if VpnSgId.objects.count() != 1:
-        raise Exception("Please add VPN Security group first!!!")
+        raise Exception("Please add VPN Security group  and region first!!!")
     vpn_sg_id = VpnSgId.objects.values()[0]['vpn_sg_id']
     vpn_sg_region = VpnSgId.objects.values()[0]['vpn_sg_region']
 
     ec2client = boto3.client("ec2", region_name=vpn_sg_region)
-    # Add the new IP received from form in Security Group
-    update_sg = ec2client.authorize_security_group_ingress(
-        GroupId=vpn_sg_id,
-        IpProtocol='TCP',
-        CidrIp=instance.allow_ip + "/32",
-        FromPort=80,
-        ToPort=80,
-    )
 
-    # If IP is not added to Security group, raise exception
-    if not update_sg['Return']:
-        raise Exception("SG was not updated. Please check!!!")
+    if instance._state.adding:
+        # Add the new IP received from form in Security Group
+        update_sg = ec2client.authorize_security_group_ingress(
+            GroupId=vpn_sg_id,
+            IpProtocol='TCP',
+            CidrIp=instance.allow_ip + "/32",
+            FromPort=80,
+            ToPort=80,
+        )
 
-    # Set Security Rule ID in Allow Access model
-    instance.sg_rule_id = update_sg['SecurityGroupRules'][0]['SecurityGroupRuleId']
-    instance.enabled = True
+        # If IP is not added to Security group, raise exception
+        if not update_sg['Return']:
+            raise Exception("SG was not updated. Please check!!!")
 
-
-@receiver(pre_delete, sender=SgAccess, dispatch_uid="pre_delete_sgaccess")
-def pre_delete_sgaccess(sender, instance: SgAccess, **kwargs):
-    if VpnSgId.objects.count() != 1:
-        raise Exception("Please add VPN Security group first!!!")
-    vpn_sg_id = VpnSgId.objects.values()[0]['vpn_sg_id']
-    vpn_sg_region = VpnSgId.objects.values()[0]['vpn_sg_region']
-
-    ec2client = boto3.client("ec2", region_name=vpn_sg_region)
-    # Remove IP using SG Rule ID received from form in Security Group
-    remove_sg_entry = ec2client.revoke_security_group_ingress(
-        GroupId=vpn_sg_id,
-        SecurityGroupRuleIds=[instance.sg_rule_id],
-    )
-    if not remove_sg_entry['Return']:
-        raise Exception("SG Entry was not Removed. Please check!!!")
+        # Set Security Rule ID in Allow Access model
+        instance.sg_rule_id = update_sg['SecurityGroupRules'][0]['SecurityGroupRuleId']
+        instance.enabled = True
+    else:
+        # Remove IP using SG Rule ID received from form in Security Group
+        remove_sg_entry = ec2client.revoke_security_group_ingress(
+            GroupId=vpn_sg_id,
+            SecurityGroupRuleIds=[instance.sg_rule_id],
+        )
+        if not remove_sg_entry['Return']:
+            raise Exception("SG Entry was not Removed. Please check!!!")

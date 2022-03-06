@@ -8,7 +8,6 @@ class SgAccessTestCase(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         signals.pre_save.disconnect(sender=SgAccess, dispatch_uid="pre_save_sgaccess")
-        signals.pre_save.disconnect(sender=SgAccess, dispatch_uid="pre_delete_sgaccess")
 
     def setUp(self) -> None:
         SgAccess.objects.create(
@@ -28,4 +27,6 @@ class SgAccessTestCase(TestCase):
         admin = SgAccess.objects.get(sg_rule_id="sgr-0374f61bd244e0a96")
         raj = SgAccess.objects.get(sg_rule_id="sgr-0234f3f2232aad470")
         self.assertEqual(admin.allow_ip, "10.80.1.0")
+        self.assertEqual(admin.added_by, "admin")
         self.assertEqual(raj.allow_ip, "10.80.1.2")
+        self.assertEqual(raj.added_by, "raj")

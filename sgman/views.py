@@ -10,13 +10,13 @@ from .forms import SgAccessForm
 @csrf_exempt
 def index(request):
     if request.POST.get("allow_ip"):
-        form = SgAccessForm(request.POST)
+        form = SgAccessForm(request.POST or None)
     else:
         form = SgAccessForm(None)
-    allowed_sg_list = SgAccess.objects.order_by("-datetime_added")
+    allowed_sg_list = SgAccess.objects.filter(enabled=True).order_by("-datetime_added")
     context = {
         'sg_access_form': form,
-        'allowed_sg_list': allowed_sg_list
+        'allowed_sg_list': allowed_sg_list,
     }
 
     if form.is_valid() and request.POST.get("allow_ip"):
@@ -24,6 +24,8 @@ def index(request):
         return HttpResponseRedirect("sgman")
     if request.POST.get('delete-id'):
         del_sg_rule = SgAccess.objects.filter(sg_rule_id=request.POST.get('delete-id'))
-        del_sg_rule.delete()
+        del_sg_rule.update(enabled=False)
+        SgAccess.objects.get(sg_rule_id=request.POST.get('delete-id')).save(update_fields=['enabled'])
+        return HttpResponseRedirect("sgman")
 
     return render(request, 'sgman/sg_list.html', context)
