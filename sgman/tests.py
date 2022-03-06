@@ -8,6 +8,7 @@ class SgAccessTestCase(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         signals.pre_save.disconnect(sender=SgAccess, dispatch_uid="pre_save_sgaccess")
+        signals.pre_save.disconnect(sender=SgAccess, dispatch_uid="pre_delete_sgaccess")
 
     def setUp(self) -> None:
         SgAccess.objects.create(

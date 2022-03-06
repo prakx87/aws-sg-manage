@@ -62,4 +62,16 @@ def pre_save_sgaccess(sender, instance: SgAccess, **kwargs):
 
 @receiver(pre_delete, sender=SgAccess, dispatch_uid="pre_delete_sgaccess")
 def pre_delete_sgaccess(sender, instance: SgAccess, **kwargs):
-    pass
+    if VpnSgId.objects.count() != 1:
+        raise Exception("Please add VPN Security group first!!!")
+    vpn_sg_id = VpnSgId.objects.values()[0]['vpn_sg_id']
+    vpn_sg_region = VpnSgId.objects.values()[0]['vpn_sg_region']
+
+    ec2client = boto3.client("ec2", region_name=vpn_sg_region)
+    # Remove IP using SG Rule ID received from form in Security Group
+    remove_sg_entry = ec2client.revoke_security_group_ingress(
+        GroupId=vpn_sg_id,
+        SecurityGroupRuleIds =[instance.sg_rule_id],
+    )
+    if not remove_sg_entry['Return']:
+        raise Exception("SG Entry was not Removed. Please check!!!")
