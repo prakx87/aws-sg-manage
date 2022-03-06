@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import VpnSgId, SgAccess
+from .models import SgAccess
 from django.db.models import signals
 
 

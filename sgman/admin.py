@@ -14,7 +14,7 @@ class VpnSgIdAdmin(admin.ModelAdmin):
 
 
 class SgAccessAdmin(admin.ModelAdmin):
-    list_display = ('sg_rule_id', 'allow_ip', 'datetime_added', 'added_by')
+    list_display = ('sg_rule_id', 'allow_ip', 'datetime_added', 'added_by', 'enabled')
 
 
 admin.site.register(VpnSgId, VpnSgIdAdmin)

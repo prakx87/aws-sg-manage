@@ -57,6 +57,7 @@ def pre_save_sgaccess(sender, instance: SgAccess, **kwargs):
 
     # Set Security Rule ID in Allow Access model
     instance.sg_rule_id = update_sg['SecurityGroupRules'][0]['SecurityGroupRuleId']
+    instance.enabled = True
 
 
 @receiver(pre_delete, sender=SgAccess, dispatch_uid="pre_delete_sgaccess")

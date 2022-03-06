@@ -50,6 +50,7 @@ table {
         <th>Allowed IP</th>
         <th>Added At</th>
         <th>Added By</th>
+        <th>Enabled</th>
     </tr>
   </thead>
     <tr>
@@ -59,6 +60,7 @@ table {
         <td>{{ sg.allow_ip }}</td>
         <td>{{ sg.datetime_added }}</td>
         <td>{{ sg.added_by }}</td>
+        <td>{{ sg.enabled }}</td>
          </tr>
         {% endfor %}
     </tr>
