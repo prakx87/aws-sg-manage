@@ -51,6 +51,7 @@ table {
         <th>Added At</th>
         <th>Added By</th>
         <th>Enabled</th>
+        <th></th>
     </tr>
   </thead>
     <tr>
@@ -61,7 +62,11 @@ table {
         <td>{{ sg.datetime_added }}</td>
         <td>{{ sg.added_by }}</td>
         <td>{{ sg.enabled }}</td>
-         </tr>
+        <td><form method="POST">
+        <input type="hidden" value="{{ sg.sg_rule_id }}" name="delete-id">
+        <input type="Submit" value="Delete"></button>
+        </form></td>
+        </tr>
         {% endfor %}
     </tr>
   </table>
