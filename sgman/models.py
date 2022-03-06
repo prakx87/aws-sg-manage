@@ -71,7 +71,7 @@ def pre_delete_sgaccess(sender, instance: SgAccess, **kwargs):
     # Remove IP using SG Rule ID received from form in Security Group
     remove_sg_entry = ec2client.revoke_security_group_ingress(
         GroupId=vpn_sg_id,
-        SecurityGroupRuleIds =[instance.sg_rule_id],
+        SecurityGroupRuleIds=[instance.sg_rule_id],
     )
     if not remove_sg_entry['Return']:
         raise Exception("SG Entry was not Removed. Please check!!!")
