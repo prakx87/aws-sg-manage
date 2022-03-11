@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 
 from .models import SgAccess
@@ -7,6 +8,7 @@ from .forms import SgAccessForm
 
 
 # Create your views here.
+@login_required(login_url="/admin/")
 @csrf_exempt
 def index(request):
     if request.POST.get("allow_ip"):

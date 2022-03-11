@@ -24,13 +24,15 @@ table, td, th {
 table {
   width: 700px;
   border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 </style>
 </head>
 
 {% if user.is_authenticated and perms.sgman.change_sgaccess %}
-<div class="container">
+<div class="container" align="center">
     <form method="POST">
       <fieldset>
         <strong><legend>Enter Employee IP To Allow Access</legend></strong>
@@ -46,7 +48,8 @@ table {
   <table class="table">
    <thead>
     <tr>
-      <th>Security Group Rule ID</th>
+        <th>Employee Email</th>
+        <th>Security Group Rule ID</th>
         <th>Allowed IP</th>
         <th>Added At</th>
         <th>Added By</th>
@@ -56,6 +59,7 @@ table {
     <tr>
         {% for sg in allowed_sg_list %}
         <tr>
+        <td>{{ sg.employee_email }}</td>
         <td>{{ sg.sg_rule_id }}</td>
         <td>{{ sg.allow_ip }}</td>
         <td>{{ sg.datetime_added }}</td>

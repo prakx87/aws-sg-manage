@@ -5,8 +5,8 @@ from .models import SgAccess
 class SgAccessForm(forms.ModelForm):
     class Meta:
         model = SgAccess
-        fields = ["allow_ip"]
-        labels = {"allow_ip": "Allow IP"}
+        fields = ["employee_email", "allow_ip"]
+        labels = {"employee_email": "Employee Email", "allow_ip": "Allow IP"}
 
     def save(self, **kwargs):
         user = kwargs.pop('user')

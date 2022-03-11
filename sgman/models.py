@@ -24,13 +24,14 @@ class VpnSgId(models.Model):
 
 class SgAccess(models.Model):
     sg_rule_id = models.CharField(max_length=50, null=True)
+    employee_email = models.EmailField()
     allow_ip = models.GenericIPAddressField()
     datetime_added = models.DateTimeField(default=timezone.now)
     added_by = models.CharField(max_length=50)
     enabled = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.allow_ip
+        return self.employee_email
 
 
 @receiver(pre_save, sender=SgAccess, dispatch_uid="pre_save_sgaccess")
