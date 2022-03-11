@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 
 from .models import SgAccess
@@ -23,6 +24,7 @@ def index(request):
 
     if form.is_valid() and request.POST.get("allow_ip"):
         form.save(user=request.user, commit=False)
+        messages.success(request, 'Employee IP whitelisted successfully.')
         return HttpResponseRedirect("sgman")
     if request.POST.get('delete-id'):
         del_sg_rule = SgAccess.objects.filter(sg_rule_id=request.POST.get('delete-id'))

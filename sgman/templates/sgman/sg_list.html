@@ -5,40 +5,61 @@
 {% block content %}
 <head>
 <style>
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
 
-/* Solid border */
-hr.solid {
-  border-top: 3px solid #bbb;
-}
+    .center {
+      margin-left: auto;
+      margin-right: auto;
+      text-align:center;
+      width: 21%;
+      border: 3px solid green;
+      padding: 10px;
+    }
 
-table, td, th {
-  border: 1px solid #DDD;
-  text-align:center;
-  width:14.2%;
-  padding:5px;
-}
+    .form {
+        text-align: center;
+    }
 
-table {
-  width: 700px;
-  border-collapse: collapse;
-  margin-left: auto;
-  margin-right: auto;
-}
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* Solid border */
+    hr.solid {
+      border-top: 3px solid #bbb;
+    }
+
+    table, td, th {
+      border: 1px solid #DDD;
+      text-align:center;
+      width:14.2%;
+      padding:5px;
+      white-space: nowrap;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
 </style>
 </head>
 
 {% if user.is_authenticated and perms.sgman.change_sgaccess %}
-<div class="container" align="center">
+
+{% if messages %}
+<ul class="messages" align='center'>
+    {% for message in messages %}
+    <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<div class='center'>
     <form method="POST">
+      <div class="inputs" align='right'>
       <fieldset>
-        <strong><legend>Enter Employee IP To Allow Access</legend></strong>
-        {{ sg_access_form }}
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <strong><legend align="center">Enter Employee details</legend></strong><br />
+        {{ sg_access_form.as_p }}<br />
+        <button type="submit" class='center' >Submit</button>
       </fieldset>
+      </div>
     </form>
 </div>
 
